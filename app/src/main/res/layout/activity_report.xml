@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Report"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+        <EditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+
+            android:clickable="true"
+            android:hint="From Date"
+            android:editable="false"
+            android:id="@+id/date_Field1"
+            android:onClick="date_picker1"
+            android:focusable="false"
+            />
+        <EditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+
+            android:clickable="true"
+            android:hint="To Date"
+            android:editable="false"
+            android:id="@+id/date_Field2"
+            android:onClick="date_picker2"
+            android:focusable="false"
+            />
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+
+            android:id="@+id/by_date_filter"
+            android:layout_weight="1"
+            android:src="@drawable/ic_search"
+            android:onClick="btn_date_search"
+            android:background="@drawable/button_rounded"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Chasis #"
+            android:inputType="text"
+            android:id="@+id/edt_chasis_no"
+            />
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:id="@+id/by_chasis"
+            android:layout_weight="1"
+            android:src="@drawable/ic_search"
+            android:onClick="btn_chasis"
+            android:background="@drawable/button_rounded"/>
+    </LinearLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        android:id="@+id/report_listView">
+
+    </ListView>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+
+        >
+        <TextView
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textColor="#000"
+            android:text="Net Profit"
+
+            android:layout_marginLeft="10dp"
+
+            />
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:onClick="report_info_btn"
+            android:src="@drawable/ic_info_black_24dp"
+            android:background="@drawable/button_rounded"/>
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="15dp"
+            android:onClick="report_download_btn"
+            android:src="@drawable/ic_file_download"
+            android:background="@drawable/button_rounded"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:layout_weight="1"
+            android:id="@+id/total"
+            android:textAlignment="center"
+            android:textSize="20sp"/>
+    </LinearLayout>
+
+</LinearLayout>

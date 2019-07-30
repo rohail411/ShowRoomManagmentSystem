@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "929363220165",
+    "firebase_url": "https://showroommanagmentsystem.firebaseio.com",
+    "project_id": "showroommanagmentsystem",
+    "storage_bucket": "showroommanagmentsystem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929363220165:android:4618895363ef5780",
+        "android_client_info": {
+          "package_name": "com.rohailbutt411gmail.showroommanagmentsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "929363220165-eckner2limcekqs4vn8m7e40godi2pek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rohailbutt411gmail.showroommanagmentsystem",
+            "certificate_hash": "7f419e893e0e7e060a2c0a9575e330c456f5b4b5"
+          }
+        },
+        {
+          "client_id": "929363220165-r9qnhm1eb285bdhm6mnvd27qo79qulg3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwwfhPcas_BYR8toMjGpSkb2mwkV1s3qI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "929363220165-r9qnhm1eb285bdhm6mnvd27qo79qulg3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
