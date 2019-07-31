@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -56,8 +58,10 @@ public class Report extends AppCompatActivity {
 
     private DatabaseReference expenseDatabase;
     private DatabaseReference soldDatabase;
+    private DatabaseReference userDatabase;
     private int expense=0;
     private int profit = 0;
+    private int netProfit = 0;
     private DatePickerDialog datePickerDialog;
     int year;
     int month;
@@ -67,7 +71,9 @@ public class Report extends AppCompatActivity {
     private TextView totalText;
     private ListView listView;
     private List<String> list;
-
+    private Spinner reportUserSpinner;
+    private ArrayList<String> userArrayList;
+    private String filterUser;
     Date dt,dt2 ;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 111;
     private ArrayList<Sold> mList;
@@ -87,6 +93,7 @@ public class Report extends AppCompatActivity {
     Sold reportPurchaseAmount;
     Sold reportRemainingAmount;
     Sold reportProfit;
+    Sold reportPurchaseUser;
     Expense reportExpenseType;
     Expense reportExpenseUser;
     Expense reportExpenseDetail;
@@ -104,9 +111,60 @@ public class Report extends AppCompatActivity {
         edt_chasis = (EditText) findViewById(R.id.edt_chasis_no);
         totalText = (TextView) findViewById(R.id.total);
         listView = (ListView) findViewById(R.id.report_listView);
+        reportUserSpinner = (Spinner) findViewById(R.id.report_user_filter);
         list = new ArrayList<>();
         report_sold = new Sold();
         expense_report = new Expense();
+        userArrayList = new ArrayList<>();
+        userArrayList.add("all");
+        userDatabase = FirebaseDatabase.getInstance().getReference();
+        userDatabase.child("Users").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                User u = dataSnapshot.getValue(User.class);
+                userArrayList.add(u.getName());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        final ArrayAdapter<String> userAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,userArrayList);
+        reportUserSpinner.setAdapter(userAdapter);
+
+        reportUserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filterUser = userArrayList.get(position);
+                if(!edt_date1.getText().toString().equals("") && !edt_date2.getText().toString().equals("")){
+                    profit = 0;
+                    expense = 0;
+                    list.clear();
+                    fetch_date_queryset();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
@@ -167,7 +225,8 @@ public class Report extends AppCompatActivity {
                 search_bike_detail(value);
             }
         });
-        totalText.setText(String.valueOf(profit-expense));
+        netProfit = profit-expense;
+        totalText.setText(String.valueOf(netProfit));
 
     }
     public void fetch_date_queryset(){
@@ -225,7 +284,7 @@ public class Report extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Sold sold = dataSnapshot.getValue(Sold.class);
-                if((dt.equals(sold.getDate())|| dt.before(sold.getDate()))&&(dt2.equals(sold.getDate())||dt2.after(sold.getDate()))){
+                if((dt.equals(sold.getDate())|| dt.before(sold.getDate()))&&(dt2.equals(sold.getDate())||dt2.after(sold.getDate())) && (filterUser.equals("all")|| filterUser.equals(sold.getUser().toLowerCase()))){
                     profit += sold.getProfit();
                     list.add(sold.getChasis_no());
                     report_sold.setReg_no(sold.getReg_no());
@@ -240,6 +299,7 @@ public class Report extends AppCompatActivity {
                     report_sold.setSell_amount(sold.getSell_amount());
                     report_sold.setDate(sold.getDate());
                     report_sold.setProfit(sold.getProfit());
+                    report_sold.setPurchase_user(sold.getPurchase_user());
                     mList.add(report_sold);
                     report_sold = new Sold();
 
@@ -364,27 +424,28 @@ public class Report extends AppCompatActivity {
         }
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String currentdate = df.format(Calendar.getInstance().getTime());
-        String pdfname = "Rohail.pdf";
+        String pdfname = currentdate+".pdf";
         pdfFile = new File(docsFolder.getAbsolutePath(), pdfname);
         OutputStream output = new FileOutputStream(pdfFile);
         Document document = new Document(PageSize.A4);
-        PdfPTable table = new PdfPTable(new float[]{ 3, 3, 3, 3,3,3,3,3,3,3,3});
+        PdfPTable table = new PdfPTable(new float[]{3, 3, 3, 3, 3,3,3,3,3,3,3,3});
         table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
         table.getDefaultCell().setFixedHeight(50);
         table.setTotalWidth(PageSize.A4.getWidth());
         table.setWidthPercentage(100);
         table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
-        table.addCell("SR.NO");
+        table.addCell("SR #");
         table.addCell("Reg #");
         table.addCell("Chasis #");
         table.addCell("Features");
-        table.addCell("Seller Name");
+        table.addCell("Purchase User");
+        table.addCell("Seller User");
         table.addCell("Buyer Name");
         table.addCell("Purchase Amount");
         table.addCell("Sell Amount");
         table.addCell("Sell Date");
-        table.addCell("Remaining Amount");
         table.addCell("Profit");
+        table.addCell("Remaining Amount");
 
         table.setHeaderRows(1);
         PdfPCell[] cells = table.getRow(0).getCells();
@@ -405,6 +466,7 @@ public class Report extends AppCompatActivity {
             reportPurchaseAmount = mList.get(i);
             reportRemainingAmount = mList.get(i);
             reportProfit = mList.get(i);
+            reportPurchaseUser = mList.get(i);
             String regNo = reportRegNo.getReg_no();
             String chasisNo = reportChasisNo.getChasis_no();
             String brand = reportBrand.getBrand();
@@ -412,6 +474,7 @@ public class Report extends AppCompatActivity {
             String model = reportModel.getModel();
             String buyer = reportBuyerName.getBuyer_name();
             String seller = reportUser.getUser();
+            String purchaseUser = reportPurchaseUser.getPurchase_user();
             int purchaseAmount = reportPurchaseAmount.getBuy_amount();
             int sellAmount = reportSellAmount.getSell_amount();
             Date date = reportDate.getDate();
@@ -422,21 +485,23 @@ public class Report extends AppCompatActivity {
             table.addCell(regNo);
             table.addCell(chasisNo);
             table.addCell(brand+"/"+color+"/"+model);
+            table.addCell(purchaseUser);
             table.addCell(seller);
             table.addCell(buyer);
             table.addCell(String.valueOf(purchaseAmount));
             table.addCell(String.valueOf(sellAmount));
             table.addCell(String.valueOf(date.getDate())+"/"+String.valueOf(date.getMonth())+"/"+String.valueOf(date.getYear()));
-            table.addCell(String.valueOf(remainingAmount));
             table.addCell(String.valueOf(profit));
+            table.addCell(String.valueOf(remainingAmount));
 
         }
-        PdfPTable tableExpense = new PdfPTable(new float[]{3, 3, 3, 3, 3});
+        PdfPTable tableExpense = new PdfPTable(new float[]{3,3, 3, 3, 3, 3});
         tableExpense.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
         tableExpense.getDefaultCell().setFixedHeight(50);
         tableExpense.setTotalWidth(PageSize.A4.getWidth());
         tableExpense.setWidthPercentage(100);
         tableExpense.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
+        tableExpense.addCell("SR #");
         tableExpense.addCell("Expense Type");
         tableExpense.addCell("Expense Detail");
         tableExpense.addCell("User");
@@ -460,6 +525,7 @@ public class Report extends AppCompatActivity {
             int expAmount = reportExpenseAmount.getAmount();
             Date expDate = reportExpenseDate.getDate();
 
+            tableExpense.addCell(String.valueOf(i));
             tableExpense.addCell(expType);
             tableExpense.addCell(expdetail.substring(0,10));
             tableExpense.addCell(expUser);
@@ -492,7 +558,7 @@ public class Report extends AppCompatActivity {
         document.open();
         Font f = new Font(Font.FontFamily.TIMES_ROMAN, 30.0f, Font.UNDERLINE, BaseColor.BLUE);
         Font g = new Font(Font.FontFamily.TIMES_ROMAN, 20.0f, Font.NORMAL, BaseColor.BLUE);
-        document.add(new Paragraph("Bashir Motors \n", f));
+        document.add(new Paragraph("Sohaib Bajwa Motors \n", f));
         document.add(new Paragraph("Sell Report\n\n", g));
         document.add(table);
         document.add(new Paragraph("\nExpenses\n\n",g));

@@ -12,29 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="10dp">
-        <EditText
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp">
+        <Spinner
+            android:layout_width="270dp"
+            android:id="@+id/report_user_filter"
+            android:layout_height="match_parent">
 
-            android:clickable="true"
-            android:hint="From Date"
-            android:editable="false"
-            android:id="@+id/date_Field1"
-            android:onClick="date_picker1"
-            android:focusable="false"
-            />
-        <EditText
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-
-            android:clickable="true"
-            android:hint="To Date"
-            android:editable="false"
-            android:id="@+id/date_Field2"
-            android:onClick="date_picker2"
-            android:focusable="false"
-            />
+        </Spinner>
         <ImageButton
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -44,6 +30,37 @@
             android:src="@drawable/ic_search"
             android:onClick="btn_date_search"
             android:background="@drawable/button_rounded"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="2dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:hint="From Date"
+            android:editable="false"
+            android:id="@+id/date_Field1"
+            android:onClick="date_picker1"
+            android:focusable="false"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:hint="To Date"
+            android:editable="false"
+            android:id="@+id/date_Field2"
+            android:onClick="date_picker2"
+            android:focusable="false"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -68,7 +85,7 @@
     </LinearLayout>
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="390dp"
+        android:layout_height="370dp"
         android:id="@+id/report_listView">
 
     </ListView>

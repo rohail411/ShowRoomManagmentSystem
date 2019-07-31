@@ -97,7 +97,8 @@
             android:layout_margin="6dp"
             android:hint="1234565665"
             android:id="@+id/engine_no"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:textAllCaps="true"/>
 
         <TextView
             android:layout_width="match_parent"

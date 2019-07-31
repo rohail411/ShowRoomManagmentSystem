@@ -57,6 +57,7 @@ public class ProductDetailView extends AppCompatActivity {
     String model_firebase ;
     String color_firebase;
     String buy_price_firebase;
+    String purchase_user;
     Date dt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class ProductDetailView extends AppCompatActivity {
                     model_firebase = dataSnapshot.child("model").getValue().toString();
                     color_firebase = dataSnapshot.child("color").getValue().toString();
                     buy_price_firebase = dataSnapshot.child("buy_price").getValue().toString();
+                    purchase_user = dataSnapshot.child("user").getValue().toString();
                     Picasso.get().load(image_firebase).placeholder(R.drawable.motoicon).into(imageView);
                     reg_text.setText(reg_no_firebase);
                     chasis_text.setText(chasis_no_firebase);
@@ -179,6 +181,7 @@ public class ProductDetailView extends AppCompatActivity {
             values.put("remaining_amount",Integer.parseInt(remaining_amount));
             values.put("date",dt);
             values.put("profit",profit);
+            values.put("purchase_user",purchase_user);
             values.put("user",current_user);
 
             button.setVisibility(View.INVISIBLE);

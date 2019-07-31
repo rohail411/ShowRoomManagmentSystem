@@ -100,23 +100,23 @@ public class Purchase extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
         databaseStock = FirebaseDatabase.getInstance().getReference().child("Stock");
         firebaseStorage = FirebaseStorage.getInstance().getReference();
-        final String[] brandArray = {"Honda","Metro","Yamaha","Toyo","Suzuki","United","King Hero","Read Prince","Other"};
+        final String[] brandArray = {"Honda","Metro","Yamaha","Toyo","Suzuki","United","King Hero","Read Prince","Osaka","Other"};
         final ArrayAdapter<String> brandAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,brandArray);
         spinner_brand.setAdapter(brandAdapter);
 
-        String[] colorArray = {"Red","Black","Special Edition"};
-        ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,colorArray);
+        String[] colorArray = {"Red","Black","Silver","Blue","Special Edition","Others"};
+        final ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,colorArray);
         spinner_color.setAdapter(colorAdapter);
 
         String[] docArray = {"Success","Pending"};
         ArrayAdapter<String> docAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,docArray);
         spinner_document_status.setAdapter(docAdapter);
 
-        String[] engineArray = {"70","100","125","150"};
+        String[] engineArray = {"70","100","125","150","170","180","200"};
         ArrayAdapter<String> engineAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,engineArray);
         spinner_engine_power.setAdapter(engineAdapter);
 
-        final String[] modelYear = {"1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"
+        final String[] modelYear = {"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"
         ,"2026","2027","2028","2029","2030"};
         ArrayAdapter<String> modelAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,modelYear);
         spinner_model_year.setAdapter(modelAdapter);
@@ -136,6 +136,15 @@ public class Purchase extends AppCompatActivity {
                         break;
                     case 3:
                         engine_power_val = "150";
+                        break;
+                    case 4:
+                        engine_power_val = "170";
+                        break;
+                    case 5:
+                        engine_power_val = "180";
+                        break;
+                    case 6:
+                        engine_power_val = "200";
                         break;
                      default:
                          engine_power_val = "70";
@@ -190,6 +199,9 @@ public class Purchase extends AppCompatActivity {
                         brand_val = "road prince";
                         break;
                     case 8:
+                        brand_val = "osaka";
+                        break;
+                    case 9:
                         brand_val = "other";
                     default:
                         brand_val = "honda";
@@ -213,8 +225,19 @@ public class Purchase extends AppCompatActivity {
                         color_val = "black";
                         break;
                     case 2:
+                        color_val = "silver";
+                        break;
+                    case 3:
+                        color_val = "blue";
+                        break;
+                    case 4:
                         color_val = "special_edition";
                         break;
+                    case 5:
+                        color_val = "others";
+                        break;
+                    default:
+                         color_val = "red";
                 }
             }
 
@@ -305,7 +328,6 @@ public class Purchase extends AppCompatActivity {
         } else {
 
         }
-
 
     }
 
