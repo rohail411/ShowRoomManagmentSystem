@@ -45,7 +45,10 @@
         <activity
             android:name=".Report"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ResetPassword" android:parentActivityName=".Login"></activity>
+        <activity
+            android:name=".ResetPassword"
+            android:parentActivityName=".Login" />
+        <activity android:name=".DocumentStatus" android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

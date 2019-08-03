@@ -109,13 +109,6 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public void signup(View view) {
-        Intent signup = new Intent(this,SignUp.class);
-        signup.putExtra("name","");
-        signup.putExtra("role","");
-        startActivity(signup);
-
-    }
 
     public void reset_password_btn(View view) {
         startActivity(new Intent(Login.this,ResetPassword.class));

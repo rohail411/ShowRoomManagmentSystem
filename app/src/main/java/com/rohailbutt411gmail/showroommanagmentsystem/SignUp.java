@@ -147,15 +147,7 @@ public class SignUp extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         progressDialog.dismiss();
-                                        if(!user.equals("") && !role.equals("")){
-                                            startActivity(new Intent(SignUp.this,MainActivity.class));
-                                            finish();
-                                        }
-                                        else{
-                                            Intent login = new Intent(SignUp.this,Login.class);
-                                            startActivity(login);
-                                            finish();
-                                        }
+                                        finish();
 
                                     }
 

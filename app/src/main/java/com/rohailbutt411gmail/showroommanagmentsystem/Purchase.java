@@ -108,8 +108,8 @@ public class Purchase extends AppCompatActivity {
         final ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,colorArray);
         spinner_color.setAdapter(colorAdapter);
 
-        String[] docArray = {"Success","Pending"};
-        ArrayAdapter<String> docAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,docArray);
+        String[] docArray = {"Completed","Pending","Excise"};
+        final ArrayAdapter<String> docAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,docArray);
         spinner_document_status.setAdapter(docAdapter);
 
         String[] engineArray = {"70","100","125","150","170","180","200"};
@@ -252,11 +252,15 @@ public class Purchase extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        document_val = "success";
+                        document_val = "completed";
                         break;
                     case 1:
                         document_val = "pending";
+                    case 2:
+                        document_val = "excise";
                         break;
+                    default:
+                        document_val = "completed";
                 }
             }
 

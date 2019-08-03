@@ -215,19 +215,31 @@ public class Report extends AppCompatActivity {
     }
 
     public void btn_date_search(View view) {
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,android.R.id.text1,list);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String value = (String) listView.getItemAtPosition(position);
-                search_bike_detail(value);
-            }
-        });
-        netProfit = profit-expense;
-        totalText.setText(String.valueOf(netProfit));
-
+        if(list.size()==0){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Data Found");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.setCancelable(false);
+            builder.show();
+        }
+        else {
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, list);
+            listView.setAdapter(arrayAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String value = (String) listView.getItemAtPosition(position);
+                    search_bike_detail(value);
+                }
+            });
+            netProfit = profit - expense;
+            totalText.setText(String.valueOf(netProfit));
+        }
     }
     public void fetch_date_queryset(){
         mList = new ArrayList<Sold>();
@@ -284,7 +296,7 @@ public class Report extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Sold sold = dataSnapshot.getValue(Sold.class);
-                if((dt.equals(sold.getDate())|| dt.before(sold.getDate()))&&(dt2.equals(sold.getDate())||dt2.after(sold.getDate())) && (filterUser.equals("all")|| filterUser.equals(sold.getUser().toLowerCase()))){
+                if((dt.equals(sold.getDate())|| dt.before(sold.getDate()))&&(dt2.equals(sold.getDate())||dt2.after(sold.getDate())) && (filterUser.equals("all") || filterUser.toLowerCase().equals(sold.getUser().toLowerCase()))){
                     profit += sold.getProfit();
                     list.add(sold.getChasis_no());
                     report_sold.setReg_no(sold.getReg_no());
@@ -411,7 +423,7 @@ public class Report extends AppCompatActivity {
             }
             return;
         } else {
-            Log.e("Yarrr","Ke krna pya aa");
+
             createPdf();
         }
     }
@@ -558,7 +570,7 @@ public class Report extends AppCompatActivity {
         document.open();
         Font f = new Font(Font.FontFamily.TIMES_ROMAN, 30.0f, Font.UNDERLINE, BaseColor.BLUE);
         Font g = new Font(Font.FontFamily.TIMES_ROMAN, 20.0f, Font.NORMAL, BaseColor.BLUE);
-        document.add(new Paragraph("Sohaib Bajwa Motors \n", f));
+        document.add(new Paragraph("Shoaib Bajwa Motors \n", f));
         document.add(new Paragraph("Sell Report\n\n", g));
         document.add(table);
         document.add(new Paragraph("\nExpenses\n\n",g));

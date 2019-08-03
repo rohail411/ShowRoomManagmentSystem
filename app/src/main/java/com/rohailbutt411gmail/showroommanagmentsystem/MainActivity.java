@@ -2,6 +2,7 @@ package com.rohailbutt411gmail.showroommanagmentsystem;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,17 +32,45 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     String current_user_name="",role="";
     View parentLayout;
-    private ImageButton user_btn,report_btn;
+    private ImageButton user_btn,report_btn,purchaseBtn,sellBtn,expenseBtn,docStatusBtn;
+    private TextView addUserTxt,reportTxt,purchaseTxt,sellTxt,expenseTxt,docStatusTxt;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         parentLayout = findViewById(R.id.main_layout);
+        purchaseBtn = (ImageButton) findViewById(R.id.main_purchase_btn);
+        sellBtn = (ImageButton) findViewById(R.id.main_sell_btn);
+        expenseBtn = (ImageButton) findViewById(R.id.main_expense_btn);
+        docStatusBtn = (ImageButton) findViewById(R.id.doc_update);
+        purchaseTxt = (TextView) findViewById(R.id.main_purchase_txt);
+        sellTxt = (TextView) findViewById(R.id.main_sell_txt);
+        expenseTxt = (TextView) findViewById(R.id.main_expense_txt);
+        docStatusTxt = (TextView) findViewById(R.id.main_docStatus_txt);
+        progressBar = (ProgressBar) findViewById(R.id.main_layout_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
         mAuth = FirebaseAuth.getInstance();
         user_btn = (ImageButton) findViewById(R.id.add_user_main);
         report_btn = (ImageButton) findViewById(R.id.report_main);
+        addUserTxt = (TextView) findViewById(R.id.add_user_txt);
+        reportTxt = (TextView) findViewById(R.id.report_txt);
+        purchaseBtn.setVisibility(View.INVISIBLE);
+        purchaseBtn.setEnabled(false);
+        purchaseTxt.setVisibility(View.INVISIBLE);
+        sellBtn.setVisibility(View.INVISIBLE);
+        sellBtn.setEnabled(false);
+        sellTxt.setVisibility(View.INVISIBLE);
+        expenseBtn.setVisibility(View.INVISIBLE);
+        expenseBtn.setEnabled(false);
+        expenseTxt.setVisibility(View.INVISIBLE);
+        docStatusBtn.setVisibility(View.INVISIBLE);
+        docStatusBtn.setEnabled(false);
+        docStatusTxt.setVisibility(View.INVISIBLE);
         user_btn.setVisibility(View.INVISIBLE);
         report_btn.setVisibility(View.INVISIBLE);
+        addUserTxt.setVisibility(View.INVISIBLE);
+        reportTxt.setVisibility(View.INVISIBLE);
         user_btn.setEnabled(false);
         report_btn.setEnabled(false);
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -69,9 +99,24 @@ public class MainActivity extends AppCompatActivity {
                     current_user_name = dataSnapshot.child("name").getValue().toString();
                     role = dataSnapshot.child("role").getValue().toString();
                     getSupportActionBar().setTitle("Welcome "+current_user_name.substring(0,1).toUpperCase()+current_user_name.substring(1));
+                    purchaseBtn.setVisibility(View.VISIBLE);
+                    purchaseBtn.setEnabled(true);
+                    purchaseTxt.setVisibility(View.VISIBLE);
+                    sellBtn.setVisibility(View.VISIBLE);
+                    sellBtn.setEnabled(true);
+                    sellTxt.setVisibility(View.VISIBLE);
+                    expenseBtn.setVisibility(View.VISIBLE);
+                    expenseBtn.setEnabled(true);
+                    expenseTxt.setVisibility(View.VISIBLE);
+                    docStatusBtn.setVisibility(View.VISIBLE);
+                    docStatusBtn.setEnabled(true);
+                    docStatusTxt.setVisibility(View.VISIBLE);
                     if(  role.equals("admin")){
                         user_btn.setVisibility(View.VISIBLE);
                         report_btn.setVisibility(View.VISIBLE);
+                        addUserTxt.setVisibility(View.VISIBLE);
+                        reportTxt.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         user_btn.setEnabled(true);
                         report_btn.setEnabled(true);
                     }
@@ -171,6 +216,12 @@ public class MainActivity extends AppCompatActivity {
         a.putExtra("name",current_user_name);
         a.putExtra("role",role);
         startActivity(a);
+    }
+
+    public void doc_btn(View view) {
+        if(isOnline()){
+            startActivity(new Intent(MainActivity.this,DocumentStatus.class));
+        }
     }
 }
 

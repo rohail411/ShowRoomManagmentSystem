@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="18dp"
     android:background="@color/background"
     android:id="@+id/main_layout">
 
@@ -19,8 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/iconpurchase"
-            android:padding="18dp"
+            android:padding="13dp"
             android:layout_weight="1"
+            android:id="@+id/main_purchase_btn"
             android:background="#fff"
             android:layout_marginRight="10dp"
             android:onClick="btn_purchase"/>
@@ -29,10 +30,34 @@
             android:layout_height="wrap_content"
             android:src="@drawable/iconsell"
             android:layout_weight="1"
-            android:padding="21dp"
+            android:id="@+id/main_sell_btn"
+            android:padding="15dp"
             android:background="#fff"
             android:onClick="btn_sell"/>
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/main_purchase_txt"
+            android:text="Purchase"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sell"
+            android:id="@+id/main_sell_txt"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -45,21 +70,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/iconexpense"
-            android:padding="21dp"
+            android:padding="17dp"
+            android:id="@+id/main_expense_btn"
             android:layout_weight="1"
             android:background="#fff"
             android:layout_marginRight="10dp"
             android:onClick="btn_expenses"/>
+
         <ImageButton
+            android:id="@+id/doc_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/iconreport"
             android:layout_weight="1"
-            android:id="@+id/report_main"
-            android:padding="13dp"
-            android:onClick="report_btn"
-            android:background="#fff"/>
+            android:background="#fff"
+            android:onClick="doc_btn"
+            android:padding="16dp"
+            android:src="@drawable/icon_doc" />
 
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Expenses"
+            android:id="@+id/main_expense_txt"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Doc Status"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:id="@+id/main_docStatus_txt"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,13 +123,48 @@
             android:onClick="add_user_btn"
             android:background="#fff"
             android:id="@+id/add_user_main"
-            android:padding="21dp"
+            android:padding="10dp"
             android:layout_weight="1"
             />
         <ImageButton
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/iconreport"
+            android:layout_weight="1"
+            android:id="@+id/report_main"
+            android:padding="11dp"
+            android:onClick="report_btn"
+            android:background="#fff"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add User "
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:id="@+id/add_user_txt"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Report"
+            android:textColor="#000"
+            android:id="@+id/report_txt"
+            android:textSize="16sp"
+            android:textAlignment="center"
             android:layout_weight="1"/>
     </LinearLayout>
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_layout_progressbar"
+        android:layout_marginTop="-300dp"
+        />
 
 </LinearLayout>

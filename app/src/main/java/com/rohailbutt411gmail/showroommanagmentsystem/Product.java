@@ -8,18 +8,28 @@ public class Product {
     public String engine_power;
     public String color;
     public String reg_no;
+    public String document_status;
 
 
     public Product(){
 
     }
-    public Product(String image,String chasis_no,String brand,String model,String engine_power,String color,String reg_no){
+    public Product(String image,String chasis_no,String brand,String model,String engine_power,String color,String reg_no,String document_status){
         this.image = image;
         this.chasis_no = chasis_no;
         this.brand = brand;
         this.model = model;
         this.engine_power = engine_power;
         this.color = color;
+        this.document_status = document_status;
+    }
+
+    public String getDocument_status() {
+        return document_status;
+    }
+
+    public void setDocument_status(String document_status) {
+        this.document_status = document_status;
     }
 
     public String getReg_no() {

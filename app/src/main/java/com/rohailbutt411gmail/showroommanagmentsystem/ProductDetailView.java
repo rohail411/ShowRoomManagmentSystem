@@ -1,6 +1,9 @@
 package com.rohailbutt411gmail.showroommanagmentsystem;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -182,7 +185,7 @@ public class ProductDetailView extends AppCompatActivity {
             values.put("date",dt);
             values.put("profit",profit);
             values.put("purchase_user",purchase_user);
-            values.put("user",current_user);
+            values.put("user",current_user.toLowerCase());
 
             button.setVisibility(View.INVISIBLE);
             button.setEnabled(false);
@@ -200,11 +203,16 @@ public class ProductDetailView extends AppCompatActivity {
                                 progressBar.setVisibility(View.INVISIBLE);
 
                                 if(task.isSuccessful()){
-                                    snackBarMessage("Item Sold Success");
-                                    amount_edt.setText("");
-                                    buyer_edit.setText("");
-                                    detail_edt.setText("");
-                                    remaining_amount_edt.setText("");
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailView.this);
+                                    builder.setMessage("Item Sold Successfully");
+                                    builder.setCancelable(false);
+                                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    });
+                                    builder.show();
                                 }
                                 else{
                                     snackBarMessage("Error");

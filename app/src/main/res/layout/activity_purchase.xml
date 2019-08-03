@@ -85,7 +85,8 @@
             android:layout_margin="6dp"
             android:hint="GAK 12345"
             android:id="@+id/bike_no"
-            android:inputType="text"/>
+            android:inputType="textCapCharacters"
+            />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,7 +98,7 @@
             android:layout_margin="6dp"
             android:hint="1234565665"
             android:id="@+id/engine_no"
-            android:inputType="text"
+            android:inputType="textCapCharacters"
             android:textAllCaps="true"/>
 
         <TextView
