@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DocumentStatus extends AppCompatActivity {
 
@@ -36,18 +38,20 @@ public class DocumentStatus extends AppCompatActivity {
     private ImageButton imageButton;
     private ArrayList<String> list;
     private View parentLayout;
+    private String currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_status);
         getSupportActionBar().setTitle("Doc Status");
+        currentUser = getIntent().getStringExtra("name");
         spinner = (Spinner) findViewById(R.id.spinner_doc_status);
         listView = (ListView) findViewById(R.id.doc_status_listview);
         parentLayout = findViewById(R.id.document_activity_layout);
         list = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databasePurchase = FirebaseDatabase.getInstance().getReference();
-        final String[] items = {"pending","excise"};
+        final String[] items = {"select","pending","excise"};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,items);
         spinner.setAdapter(adapter);
 
@@ -56,10 +60,12 @@ public class DocumentStatus extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
+                        break;
+                    case 1:
                         statusSelect = "pending";
                         fetchData();
                         break;
-                    case 1:
+                    case 2:
                         statusSelect = "excise";
                         fetchData();
                         break;
@@ -95,7 +101,10 @@ public class DocumentStatus extends AppCompatActivity {
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(final DialogInterface dialog, int which) {
-                            databasePurchase.child("Stock").child(list.get(position)).child("document_status").setValue("completed").addOnCompleteListener(new OnCompleteListener<Void>() {
+                            Map values = new HashMap();
+                            values.put("document_status","completed");
+                            values.put("updated_user",currentUser);
+                            databasePurchase.child("Stock").child(list.get(position)).updateChildren(values).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     dialog.dismiss();

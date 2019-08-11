@@ -18,12 +18,14 @@ public class Sold {
     public String user;
     public Date date;
     public String purchase_user;
+    public String seller_name;
+    public String updated_by;
 
 
     public Sold(){}
 
     public Sold(String chasis_no,int profit,String image,String buyer_name,String reg_no,int sell_amount,String brand,String model,String color,Date date
-    ,String user,int buy_amount,int remaining_amount,String purchase_user){
+    ,String user,int buy_amount,int remaining_amount,String purchase_user,String seller_name,String updated_by){
         this.chasis_no = chasis_no;
         this.profit = profit;
         this.image = image;
@@ -38,6 +40,24 @@ public class Sold {
         this.remaining_amount = remaining_amount;
         this.buy_amount = buy_amount;
         this.purchase_user = purchase_user;
+        this.seller_name = seller_name;
+        this.updated_by = updated_by;
+    }
+
+    public String getUpdated_by() {
+        return updated_by;
+    }
+
+    public void setUpdated_by(String updated_by) {
+        this.updated_by = updated_by;
+    }
+
+    public String getSeller_name() {
+        return seller_name;
+    }
+
+    public void setSeller_name(String seller_name) {
+        this.seller_name = seller_name;
     }
 
     public String getPurchase_user() {

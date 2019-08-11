@@ -13,6 +13,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -27,10 +28,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
 
     EditText username,email,password,confirm_password;
+    CheckBox checkBox;
     ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -52,6 +55,7 @@ public class SignUp extends AppCompatActivity {
         progressDialog = new ProgressDialog(SignUp.this);
         mAuth = FirebaseAuth.getInstance();
         spinner = (Spinner) findViewById(R.   id.signup_spinner);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
         spinner.setVisibility(View.INVISIBLE);
         final String[] user_role = {"Admin","Manager","Employee"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,user_role);
@@ -137,11 +141,12 @@ public class SignUp extends AppCompatActivity {
                             databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(u_id);
                             String deviceToken = FirebaseInstanceId.getInstance().getToken();
 
-                            HashMap<String,String> userMap = new HashMap<>();
+                            Map userMap = new HashMap<>();
                             userMap.put("name",u);
                             userMap.put("role",selected_role.toLowerCase());
                             userMap.put("image","default");
                             userMap.put("device_token",deviceToken);
+                            userMap.put("access",String.valueOf(checkBox.isChecked()));
                             databaseReference.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

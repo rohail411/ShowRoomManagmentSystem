@@ -44,6 +44,7 @@ public class ProductDetailView extends AppCompatActivity {
     private Button button;
     private TextView reg_text,chasis_text,feature_text,price_text;
     private EditText buyer_edit,detail_edt,amount_edt,date_edt,remaining_amount_edt;
+    private Boolean aBoolean;
     private ImageView imageView;
     private DatePickerDialog datePickerDialog;
     private View parentLayout;
@@ -61,6 +62,8 @@ public class ProductDetailView extends AppCompatActivity {
     String color_firebase;
     String buy_price_firebase;
     String purchase_user;
+    String owner_name;
+    String updated_user;
     Date dt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class ProductDetailView extends AppCompatActivity {
         key = getIntent().getStringExtra("key");
         title = getIntent().getStringExtra("title");
         current_user = getIntent().getStringExtra("user");
+        aBoolean = getIntent().getBooleanExtra("access",false);
         getSupportActionBar().setTitle(title.substring(0,1).toUpperCase()+""+title.substring(1));
         reg_text = (TextView) findViewById(R.id.reg_no_detail);
         chasis_text = (TextView) findViewById(R.id.chasis_no_detail);
@@ -99,7 +103,9 @@ public class ProductDetailView extends AppCompatActivity {
                     model_firebase = dataSnapshot.child("model").getValue().toString();
                     color_firebase = dataSnapshot.child("color").getValue().toString();
                     buy_price_firebase = dataSnapshot.child("buy_price").getValue().toString();
+                    owner_name = dataSnapshot.child("seller_name").getValue().toString();
                     purchase_user = dataSnapshot.child("user").getValue().toString();
+                    updated_user = dataSnapshot.child("updated_user").getValue().toString();
                     Picasso.get().load(image_firebase).placeholder(R.drawable.motoicon).into(imageView);
                     reg_text.setText(reg_no_firebase);
                     chasis_text.setText(chasis_no_firebase);
@@ -154,6 +160,19 @@ public class ProductDetailView extends AppCompatActivity {
             date_edt.setError("Please Fill Field");
             return;
         }
+        else if(!current_user.toLowerCase().equals(purchase_user.toLowerCase()) && aBoolean==false){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("You Are not able to sell those Products that are Purchased by other user");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            builder.show();
+            return;
+        }
         else{
             if(TextUtils.isEmpty(remaining_amount)){
                 remaining_amount  = "0";
@@ -177,6 +196,7 @@ public class ProductDetailView extends AppCompatActivity {
             values.put("reg_no",reg_no_firebase);
             values.put("chasis_no",chasis_no_firebase);
             values.put("image",image_firebase);
+            values.put("seller_name",owner_name);
             values.put("buyer_name",buyer_name);
             values.put("buyer_detail",buyer_detail);
             values.put("buy_amount",Integer.parseInt(buy_price_firebase));
@@ -186,6 +206,7 @@ public class ProductDetailView extends AppCompatActivity {
             values.put("profit",profit);
             values.put("purchase_user",purchase_user);
             values.put("user",current_user.toLowerCase());
+            values.put("updated_by",updated_user);
 
             button.setVisibility(View.INVISIBLE);
             button.setEnabled(false);

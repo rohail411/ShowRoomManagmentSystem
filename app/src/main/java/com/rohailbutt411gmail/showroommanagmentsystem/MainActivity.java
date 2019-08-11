@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     String current_user_name="",role="";
+    boolean access;
     View parentLayout;
     private ImageButton user_btn,report_btn,purchaseBtn,sellBtn,expenseBtn,docStatusBtn;
     private TextView addUserTxt,reportTxt,purchaseTxt,sellTxt,expenseTxt,docStatusTxt;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     current_user_name = dataSnapshot.child("name").getValue().toString();
                     role = dataSnapshot.child("role").getValue().toString();
+                    access =Boolean.valueOf(dataSnapshot.child("access").getValue().toString());
                     getSupportActionBar().setTitle("Welcome "+current_user_name.substring(0,1).toUpperCase()+current_user_name.substring(1));
                     purchaseBtn.setVisibility(View.VISIBLE);
                     purchaseBtn.setEnabled(true);
@@ -116,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
                         report_btn.setVisibility(View.VISIBLE);
                         addUserTxt.setVisibility(View.VISIBLE);
                         reportTxt.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.INVISIBLE);
                         user_btn.setEnabled(true);
                         report_btn.setEnabled(true);
                     }
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
@@ -141,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
         return true;
+
     }
 
     @Override
@@ -184,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         if(isOnline()){
             Intent sell = new Intent(MainActivity.this,Sell.class);
             sell.putExtra("name",current_user_name);
+            sell.putExtra("access",access);
             startActivity(sell);
         }
         else{
@@ -220,7 +224,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void doc_btn(View view) {
         if(isOnline()){
-            startActivity(new Intent(MainActivity.this,DocumentStatus.class));
+            Intent a = new Intent(MainActivity.this,DocumentStatus.class);
+            a.putExtra("name",current_user_name);
+            startActivity(a);
         }
     }
 }

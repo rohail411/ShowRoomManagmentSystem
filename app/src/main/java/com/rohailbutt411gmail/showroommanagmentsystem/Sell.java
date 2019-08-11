@@ -37,11 +37,13 @@ public class Sell extends AppCompatActivity {
     private SearchView searchView;
     private DatabaseReference productDatabase;
     private String current_user;
+    Boolean access;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell);
         current_user = getIntent().getStringExtra("name");
+        access = getIntent().getBooleanExtra("access",false);
         getSupportActionBar().setTitle("Sell");
         recyclerView = (RecyclerView) findViewById(R.id.recycler_sell);
         searchView = (SearchView) findViewById(R.id.sell_search_view);
@@ -104,6 +106,7 @@ public class Sell extends AppCompatActivity {
                         detailView.putExtra("key",product_id);
                         detailView.putExtra("title",model.getBrand());
                         detailView.putExtra("user",current_user);
+                        detailView.putExtra("access",access);
                         startActivity(detailView);
                     }
                 });

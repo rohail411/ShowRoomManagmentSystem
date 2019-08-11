@@ -11,7 +11,7 @@
 
     <ImageView
         android:layout_width="320dp"
-        android:layout_height="110dp"
+        android:layout_height="90dp"
         android:src="@drawable/motoicon"/>
 
     <android.support.design.widget.TextInputLayout
@@ -95,6 +95,11 @@
         >
 
     </Spinner>
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBox"
+        android:text="Enable User To sell products of Other users"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="60dp"

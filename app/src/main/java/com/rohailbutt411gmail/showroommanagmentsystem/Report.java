@@ -62,6 +62,7 @@ public class Report extends AppCompatActivity {
     private int expense=0;
     private int profit = 0;
     private int netProfit = 0;
+    private int remainingAmount = 0;
     private DatePickerDialog datePickerDialog;
     int year;
     int month;
@@ -94,6 +95,7 @@ public class Report extends AppCompatActivity {
     Sold reportRemainingAmount;
     Sold reportProfit;
     Sold reportPurchaseUser;
+    Sold reportSellerName;
     Expense reportExpenseType;
     Expense reportExpenseUser;
     Expense reportExpenseDetail;
@@ -155,6 +157,7 @@ public class Report extends AppCompatActivity {
                 if(!edt_date1.getText().toString().equals("") && !edt_date2.getText().toString().equals("")){
                     profit = 0;
                     expense = 0;
+                    remainingAmount = 0;
                     list.clear();
                     fetch_date_queryset();
                 }
@@ -181,8 +184,9 @@ public class Report extends AppCompatActivity {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
                 builder.setCancelable(false);
                 builder.setTitle("Buyer \t\t"+so.getBuyer_name());
-                builder.setMessage("Features \t\t"+so.getBrand().toUpperCase()+"/"+so.getColor().toUpperCase()+"/"+so.getModel()+"\n"+
-                        "Chasis # \t\t"+so.getChasis_no()+"\n"+"Reg # \t\t\t\t\t"+so.getReg_no().toUpperCase()+"\n"+"Sell Price \t\t"+String.valueOf(so.getSell_amount()));
+                builder.setMessage("Features: \t\t"+so.getBrand().toUpperCase()+"/"+so.getColor().toUpperCase()+"/"+so.getModel()+"\n"+
+                        "Chasis #: \t\t"+so.getChasis_no()+"\n"+"Reg #: \t\t\t\t\t"+so.getReg_no().toUpperCase()+"\n"+"Sell Price: \t\t"+String.valueOf(so.getSell_amount())
+                        +"\n"+"Updated By:"+"\t\t"+so.getUpdated_by());
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -298,6 +302,7 @@ public class Report extends AppCompatActivity {
                 Sold sold = dataSnapshot.getValue(Sold.class);
                 if((dt.equals(sold.getDate())|| dt.before(sold.getDate()))&&(dt2.equals(sold.getDate())||dt2.after(sold.getDate())) && (filterUser.equals("all") || filterUser.toLowerCase().equals(sold.getUser().toLowerCase()))){
                     profit += sold.getProfit();
+                    remainingAmount += sold.getRemaining_amount();
                     list.add(sold.getChasis_no());
                     report_sold.setReg_no(sold.getReg_no());
                     report_sold.setChasis_no(sold.getChasis_no());
@@ -312,6 +317,7 @@ public class Report extends AppCompatActivity {
                     report_sold.setDate(sold.getDate());
                     report_sold.setProfit(sold.getProfit());
                     report_sold.setPurchase_user(sold.getPurchase_user());
+                    report_sold.setSeller_name(sold.getSeller_name());
                     mList.add(report_sold);
                     report_sold = new Sold();
 
@@ -352,6 +358,7 @@ public class Report extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 profit = 0;
                 expense = 0;
+                remainingAmount = 0;
                 edt_date2.setText(dayOfMonth+"/"+String.valueOf(month+1)+"/"+year);
                 if(!edt_date2.getText().toString().equals("") && !edt_date1.getText().toString().equals("")){
                     list.clear();
@@ -374,6 +381,7 @@ public class Report extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 profit = 0;
                 expense = 0;
+                remainingAmount = 0;
                 edt_date1.setText(dayOfMonth+"/"+String.valueOf(month+1)+"/"+year);
                 if(!edt_date2.getText().toString().equals("") && !edt_date1.getText().toString().equals("")){
                     list.clear();
@@ -439,11 +447,11 @@ public class Report extends AppCompatActivity {
         String pdfname = currentdate+".pdf";
         pdfFile = new File(docsFolder.getAbsolutePath(), pdfname);
         OutputStream output = new FileOutputStream(pdfFile);
-        Document document = new Document(PageSize.A4);
-        PdfPTable table = new PdfPTable(new float[]{3, 3, 3, 3, 3,3,3,3,3,3,3,3});
+        Document document = new Document(PageSize.A2);
+        PdfPTable table = new PdfPTable(new float[]{2, 3, 3, 3, 3,3,3,3,3,3,3,3,3});
         table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
         table.getDefaultCell().setFixedHeight(50);
-        table.setTotalWidth(PageSize.A4.getWidth());
+        table.setTotalWidth(PageSize.A2.getWidth());
         table.setWidthPercentage(100);
         table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.addCell("SR #");
@@ -452,6 +460,7 @@ public class Report extends AppCompatActivity {
         table.addCell("Features");
         table.addCell("Purchase User");
         table.addCell("Seller User");
+        table.addCell("Seller Name");
         table.addCell("Buyer Name");
         table.addCell("Purchase Amount");
         table.addCell("Sell Amount");
@@ -479,6 +488,7 @@ public class Report extends AppCompatActivity {
             reportRemainingAmount = mList.get(i);
             reportProfit = mList.get(i);
             reportPurchaseUser = mList.get(i);
+            reportSellerName = mList.get(i);
             String regNo = reportRegNo.getReg_no();
             String chasisNo = reportChasisNo.getChasis_no();
             String brand = reportBrand.getBrand();
@@ -492,14 +502,15 @@ public class Report extends AppCompatActivity {
             Date date = reportDate.getDate();
             int remainingAmount = reportRemainingAmount.getRemaining_amount();
             int profit = reportProfit.getProfit();
-
-            table.addCell(String.valueOf(i));
+            String sellerName = reportSellerName.getSeller_name();
+            table.addCell(String.valueOf(i+1));
             table.addCell(regNo);
             table.addCell(chasisNo);
             table.addCell(brand+"/"+color+"/"+model);
-            table.addCell(purchaseUser);
-            table.addCell(seller);
-            table.addCell(buyer);
+            table.addCell(captalize(purchaseUser));
+            table.addCell(captalize(seller));
+            table.addCell(captalize(sellerName));
+            table.addCell(captalize(buyer));
             table.addCell(String.valueOf(purchaseAmount));
             table.addCell(String.valueOf(sellAmount));
             table.addCell(String.valueOf(date.getDate())+"/"+String.valueOf(date.getMonth())+"/"+String.valueOf(date.getYear()));
@@ -510,7 +521,7 @@ public class Report extends AppCompatActivity {
         PdfPTable tableExpense = new PdfPTable(new float[]{3,3, 3, 3, 3, 3});
         tableExpense.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
         tableExpense.getDefaultCell().setFixedHeight(50);
-        tableExpense.setTotalWidth(PageSize.A4.getWidth());
+        tableExpense.setTotalWidth(PageSize.A2.getWidth());
         tableExpense.setWidthPercentage(100);
         tableExpense.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
         tableExpense.addCell("SR #");
@@ -537,7 +548,7 @@ public class Report extends AppCompatActivity {
             int expAmount = reportExpenseAmount.getAmount();
             Date expDate = reportExpenseDate.getDate();
 
-            tableExpense.addCell(String.valueOf(i));
+            tableExpense.addCell(String.valueOf(i+1));
             tableExpense.addCell(expType);
             tableExpense.addCell(expdetail.substring(0,10));
             tableExpense.addCell(expUser);
@@ -546,16 +557,17 @@ public class Report extends AppCompatActivity {
 
         }
 
-        PdfPTable tableFooter = new PdfPTable(new float[]{3, 3, 3, 3});
+        PdfPTable tableFooter = new PdfPTable(new float[]{3,3, 3, 3, 3});
         tableFooter.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
         tableFooter.getDefaultCell().setFixedHeight(50);
-        tableFooter.setTotalWidth(PageSize.A4.getWidth());
+        tableFooter.setTotalWidth(PageSize.A2.getWidth());
         tableFooter.setWidthPercentage(100);
         tableFooter.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
         tableFooter.addCell("Total");
         tableFooter.addCell("Profit");
         tableFooter.addCell("Expenses");
         tableFooter.addCell("Net Profit");
+        tableFooter.addCell("Remaining Amount");
         tableFooter.setHeaderRows(1);
         PdfPCell[] cells2 = tableFooter.getRow(0).getCells();
         for (int j = 0; j < cells2.length; j++) {
@@ -565,7 +577,7 @@ public class Report extends AppCompatActivity {
         tableFooter.addCell(String.valueOf(profit));
         tableFooter.addCell(String.valueOf(expense));
         tableFooter.addCell(String.valueOf(profit-expense));
-
+        tableFooter.addCell(String.valueOf(remainingAmount));
         PdfWriter.getInstance(document, output);
         document.open();
         Font f = new Font(Font.FontFamily.TIMES_ROMAN, 30.0f, Font.UNDERLINE, BaseColor.BLUE);
@@ -621,5 +633,8 @@ public class Report extends AppCompatActivity {
         catch (Exception e){
             Log.e("Exxception3",e.getMessage());
         }
+    }
+    public String captalize(String str){
+        return str.substring(0,1).toUpperCase()+str.substring(1);
     }
 }

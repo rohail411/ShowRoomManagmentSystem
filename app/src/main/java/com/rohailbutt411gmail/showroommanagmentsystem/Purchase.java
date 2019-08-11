@@ -24,8 +24,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,8 +42,12 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,6 +55,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,7 +66,7 @@ public class Purchase extends AppCompatActivity {
     private EditText edt_bike_no,edt_bike_model,edt_engine_no,edt_owner_name,edt_owner_detail,edt_bike_price,dateField;
     private String brand_val,color_val,document_val,current_user_name,model_val,engine_power_val;
     private View parentLayout;
-    private DatabaseReference databaseStock;
+    private DatabaseReference databaseStock,databaseStockUpdate;
     private Button purchase_btn;
     private ProgressBar progressBar;
     final Integer REQUEST_CAMERA=1;
@@ -74,7 +82,19 @@ public class Purchase extends AppCompatActivity {
     private StorageReference firebaseStorage;
     private static final int PERMISSIONS_REQUEST_CAPTURE_IMAGE = 1;
     private static final int PERMISSION_REQUEST_STORAGE = 2;
-
+    private String firebaseImage="";
+    private String firebaseBrand="";
+    private String firebaseEnginePower="";
+    private String firebaseColor="";
+    private String firebaseModel="";
+    private String firebaseRegNo="";
+    private String firebaseChasisNo="";
+    private String firebaseSellerName="";
+    private String firebaseSellerDetail="";
+    private String firebaseDocStatus="";
+    private String firebasePurchasePrice="";
+    private String firebaseDate="";
+    private String firebaseUser="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +119,7 @@ public class Purchase extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.purchase_progress);
         progressBar.setVisibility(View.INVISIBLE);
         databaseStock = FirebaseDatabase.getInstance().getReference().child("Stock");
+        databaseStockUpdate = FirebaseDatabase.getInstance().getReference().child("Stock");
         firebaseStorage = FirebaseStorage.getInstance().getReference();
         final String[] brandArray = {"Honda","Metro","Yamaha","Toyo","Suzuki","United","King Hero","Read Prince","Osaka","Other"};
         final ArrayAdapter<String> brandAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,brandArray);
@@ -256,6 +277,7 @@ public class Purchase extends AppCompatActivity {
                         break;
                     case 1:
                         document_val = "pending";
+                        break;
                     case 2:
                         document_val = "excise";
                         break;
@@ -333,6 +355,107 @@ public class Purchase extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.admin_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+         super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+            case R.id.update:
+                update();
+                break;
+            case R.id.delete:
+                delete();
+                break;
+        }
+        return true;
+    }
+    public void update(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Chasis #");
+        final EditText txt = new EditText(this);
+        txt.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        builder.setView(txt);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                databaseStock.child(txt.getText().toString()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        firebaseImage = dataSnapshot.child("image").getValue().toString();
+                        firebaseBrand = dataSnapshot.child("brand").getValue().toString();
+                        firebaseEnginePower = dataSnapshot.child("engine_power").getValue().toString();
+                        firebaseColor = dataSnapshot.child("color").getValue().toString();
+                        firebaseModel = dataSnapshot.child("model").getValue().toString();
+                        firebaseRegNo = dataSnapshot.child("reg_no").getValue().toString();
+                        firebaseChasisNo = dataSnapshot.child("chasis_no").getValue().toString();
+                        firebaseSellerName = dataSnapshot.child("seller_name").getValue().toString();
+                        firebaseSellerDetail = dataSnapshot.child("seller_detail").getValue().toString();
+                        firebaseDocStatus = dataSnapshot.child("document_status").getValue().toString();
+                        firebasePurchasePrice = dataSnapshot.child("buy_price").getValue().toString();
+                        firebaseDate = dataSnapshot.child("date").getValue().toString();
+                        firebaseUser = dataSnapshot.child("user").getValue().toString();
+                        edt_engine_no.setText(firebaseChasisNo);
+                        edt_owner_name.setText(firebaseSellerName);
+                        edt_bike_no.setText(firebaseRegNo);
+                        edt_bike_price.setText(firebasePurchasePrice);
+                        edt_owner_detail.setText(firebaseSellerDetail);
+                        purchase_btn.setText("UPDATE");
+                        edt_engine_no.setEnabled(false);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+    public void delete(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Chasis #");
+        final EditText txt = new EditText(this);
+        txt.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+        builder.setView(txt);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                databaseStock.child(txt.getText().toString()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            snackBarMessage("Item Deleted Successfully");
+                        }else{
+                            snackBarMessage("Item not Deleted");
+                        }
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -430,7 +553,7 @@ public class Purchase extends AppCompatActivity {
                 edt_bike_price.setError("Please Fill Field");
                 return;
             }
-            else{
+            else if(purchase_btn.getText().toString().toUpperCase().equals("PURCHASE")){
                 purchase_btn.setVisibility(View.INVISIBLE);
                 purchase_btn.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
@@ -448,6 +571,7 @@ public class Purchase extends AppCompatActivity {
                 values.put("buy_price",b_price);
                 values.put("image","defaut");
                 values.put("date",date);
+                values.put("updated_user","");
 
                 databaseStock.child(e_no).setValue(values).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -474,7 +598,6 @@ public class Purchase extends AppCompatActivity {
                                                             snackBarMessage("Item Added to Stock");
                                                             edt_bike_price.setText("");
                                                             edt_bike_no.setText("");
-                                                            edt_bike_price.setText("");
                                                             edt_engine_no.setText("");
                                                             edt_owner_detail.setText("");
                                                             edt_owner_name.setText("");
@@ -502,8 +625,32 @@ public class Purchase extends AppCompatActivity {
                     }
                 });
             }
-        }
+            else if(purchase_btn.getText().toString().toUpperCase().equals("UPDATE")){
+                Map values = new HashMap<>();
+                values.put("seller_name",o_name);
+                values.put("seller_detail",o_detail);
+                values.put("reg_no",b_no);
+                values.put("buy_price",b_price);
+                databaseStock.child(firebaseChasisNo).updateChildren(values).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        edt_engine_no.setEnabled(true);
+                        if(task.isSuccessful()){
+                            snackBarMessage("Item Updated Successfully");
+                            edt_bike_price.setText("");
+                            edt_bike_no.setText("");
+                            edt_engine_no.setText("");
+                            edt_owner_detail.setText("");
+                            edt_owner_name.setText("");
+                        }
+                        else{
+                            snackBarMessage("Item Not Updated");
+                        }
+                    }
+                });
 
+            }
+        }
     }
 
 
