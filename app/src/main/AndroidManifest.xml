@@ -48,7 +48,10 @@
         <activity
             android:name=".ResetPassword"
             android:parentActivityName=".Login" />
-        <activity android:name=".DocumentStatus" android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".DocumentStatus"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".SoldEdit"></activity>
     </application>
 
 </manifest>

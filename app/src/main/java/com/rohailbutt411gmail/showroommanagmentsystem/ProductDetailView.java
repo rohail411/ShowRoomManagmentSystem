@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Repo;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -53,6 +56,7 @@ public class ProductDetailView extends AppCompatActivity {
     int dayOfMonth;
     private Calendar calendar;
     private String current_user;
+    private static String mode = "sell";
     String reg_no_firebase ;
     String chasis_no_firebase ;
     String brand_firebase ;
@@ -69,11 +73,21 @@ public class ProductDetailView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail_view);
-        key = getIntent().getStringExtra("key");
-        title = getIntent().getStringExtra("title");
-        current_user = getIntent().getStringExtra("user");
-        aBoolean = getIntent().getBooleanExtra("access",false);
-        getSupportActionBar().setTitle(title.substring(0,1).toUpperCase()+""+title.substring(1));
+        Bundle bundle = getIntent().getExtras();
+        if(bundle.getString("caller_activity_name").equals(Sell.class.toString())){
+            key = bundle.getString("key");
+            title = bundle.getString("title");
+            current_user = bundle.getString("user");
+            aBoolean = bundle.getBoolean("access",false);
+            getSupportActionBar().setTitle(title.substring(0,1).toUpperCase()+""+title.substring(1));
+            mode = "sell";
+        }
+        else if(bundle.getString("caller_activity_name").equals(Report.class.toString())){
+            mode = "edit";
+            getSupportActionBar().setTitle("Edit");
+            key = bundle.getString("key");
+        }
+
         reg_text = (TextView) findViewById(R.id.reg_no_detail);
         chasis_text = (TextView) findViewById(R.id.chasis_no_detail);
         feature_text = (TextView) findViewById(R.id.feature_detail);
@@ -91,6 +105,57 @@ public class ProductDetailView extends AppCompatActivity {
         databaseProduct = FirebaseDatabase.getInstance().getReference().child("Stock");
         databasedelete = FirebaseDatabase.getInstance().getReference().child("Stock");
         databasesell = FirebaseDatabase.getInstance().getReference().child("Sold");
+        if(mode.equals("sell")){
+            fetchProductForSell();
+        }
+        else if(mode.equals("edit")){
+            fetchProductForEdit();
+        }
+
+    }
+    public void fetchProductForEdit(){
+        databasesell.child(key).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()){
+                    reg_no_firebase = dataSnapshot.child("reg_no").getValue().toString();
+                    chasis_no_firebase = dataSnapshot.child("chasis_no").getValue().toString();
+                    brand_firebase = dataSnapshot.child("brand").getValue().toString();
+                    engine_power_firebase = dataSnapshot.child("engine_power").getValue().toString();
+                    image_firebase = dataSnapshot.child("image").getValue().toString();
+                    model_firebase = dataSnapshot.child("model").getValue().toString();
+                    color_firebase = dataSnapshot.child("color").getValue().toString();
+                    buy_price_firebase = dataSnapshot.child("buy_amount").getValue().toString();
+                    owner_name = dataSnapshot.child("seller_name").getValue().toString();
+                    purchase_user = dataSnapshot.child("user").getValue().toString();
+                    updated_user = dataSnapshot.child("updated_by").getValue().toString();
+                    Picasso.get().load(image_firebase).placeholder(R.drawable.motoicon).into(imageView);
+                    reg_text.setText(reg_no_firebase);
+                    chasis_text.setText(chasis_no_firebase);
+                    price_text.setText(buy_price_firebase);
+                    feature_text.setText(brand_firebase+"/"+engine_power_firebase+"/"+model_firebase+"/"+color_firebase);
+                    buyer_edit.setText(dataSnapshot.child("buyer_name").getValue().toString());
+                    detail_edt.setText(dataSnapshot.child("buyer_detail").getValue().toString());
+                    int sell = Integer.parseInt(dataSnapshot.child("sell_amount").getValue().toString());
+                    int remaining = Integer.parseInt(dataSnapshot.child("remaining_amount").getValue().toString());
+                    amount_edt.setText(String.valueOf(sell-remaining));
+                    remaining_amount_edt.setText(dataSnapshot.child("remaining_amount").getValue().toString());
+                    Object date = dataSnapshot.child("date").getValue();
+                    date_edt.setText(date.toString());
+                    button.setText("Update");
+                    date_edt.setVisibility(View.INVISIBLE);
+                    date_edt.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void fetchProductForSell(){
         databaseProduct.child(key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -119,9 +184,7 @@ public class ProductDetailView extends AppCompatActivity {
 
             }
         });
-
     }
-
 
 
     public void date_picker_detail(View view) {
@@ -160,7 +223,7 @@ public class ProductDetailView extends AppCompatActivity {
             date_edt.setError("Please Fill Field");
             return;
         }
-        else if(!current_user.toLowerCase().equals(purchase_user.toLowerCase()) && aBoolean==false){
+        else if(mode.equals("sell") && (!current_user.toLowerCase().equals(purchase_user.toLowerCase()) && aBoolean==false) ){
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("You Are not able to sell those Products that are Purchased by other user");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -173,7 +236,7 @@ public class ProductDetailView extends AppCompatActivity {
             builder.show();
             return;
         }
-        else{
+        else if(button.getText().toString().toLowerCase().equals("sell")){
             if(TextUtils.isEmpty(remaining_amount)){
                 remaining_amount  = "0";
             }else{
@@ -246,6 +309,50 @@ public class ProductDetailView extends AppCompatActivity {
                     }
                 }
             });
+        }
+        else if(button.getText().toString().toLowerCase().equals("update")){
+            if(TextUtils.isEmpty(remaining_amount)){
+                remaining_amount  = "0";
+            }else{
+                sell_amount = String.valueOf(Integer.parseInt(sell_amount)+Integer.parseInt(remaining_amount));
+            }
+            Integer profit = Integer.parseInt(sell_amount)-Integer.parseInt(buy_price_firebase);
+            Map values = new HashMap();
+            values.put("buyer_name",buyer_name);
+            values.put("buyer_detail",buyer_detail);
+            values.put("sell_amount",Integer.parseInt(sell_amount));
+            values.put("remaining_amount",Integer.parseInt(remaining_amount));
+            values.put("profit",profit);
+            button.setVisibility(View.INVISIBLE);
+            button.setEnabled(false);
+            progressBar.setVisibility(View.VISIBLE);
+            databasesell.child(chasis_no_firebase).updateChildren(values).addOnSuccessListener(new OnSuccessListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    button.setVisibility(View.VISIBLE);
+                    button.setEnabled(true);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailView.this);
+                    builder.setMessage("Item Updated");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                    builder.show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    button.setVisibility(View.VISIBLE);
+                    button.setEnabled(true);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    snackBarMessage("Item Not Updated");
+                }
+            });
+
         }
     }
     public void snackBarMessage(String msg){

@@ -84,6 +84,10 @@ public class Sell extends AppCompatActivity {
             query = query.orderByChild("chasis_no").equalTo(text);
             Log.e("SELL",text);
         }
+        else if(access==false){
+            query = query.orderByChild("user").equalTo(current_user);
+
+        }
 
 
         FirebaseRecyclerOptions<Product> options = new FirebaseRecyclerOptions.Builder<Product>()
@@ -107,6 +111,7 @@ public class Sell extends AppCompatActivity {
                         detailView.putExtra("title",model.getBrand());
                         detailView.putExtra("user",current_user);
                         detailView.putExtra("access",access);
+                        detailView.putExtra("caller_activity_name",Sell.class.toString());
                         startActivity(detailView);
                     }
                 });

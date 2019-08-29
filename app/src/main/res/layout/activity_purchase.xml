@@ -112,7 +112,8 @@
             android:layout_margin="6dp"
             android:hint="Ali"
             android:id="@+id/bike_owner_name"
-            android:inputType="text"/>
+            android:inputType="textCapCharacters"
+            android:textAllCaps="true"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,7 +125,8 @@
             android:layout_margin="6dp"
             android:hint=""
             android:id="@+id/bike_owner_detail"
-            android:inputType="text"/>
+            android:inputType="textCapCharacters"
+            android:textAllCaps="true"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

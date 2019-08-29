@@ -133,7 +133,7 @@ public class Purchase extends AppCompatActivity {
         final ArrayAdapter<String> docAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,docArray);
         spinner_document_status.setAdapter(docAdapter);
 
-        String[] engineArray = {"70","100","125","150","170","180","200"};
+        String[] engineArray = {"70","100","110","125","150","200"};
         ArrayAdapter<String> engineAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,engineArray);
         spinner_engine_power.setAdapter(engineAdapter);
 
@@ -153,18 +153,15 @@ public class Purchase extends AppCompatActivity {
                         engine_power_val = "100";
                         break;
                     case 2:
-                        engine_power_val = "125";
+                        engine_power_val = "110";
                         break;
                     case 3:
-                        engine_power_val = "150";
+                        engine_power_val = "125";
                         break;
                     case 4:
-                        engine_power_val = "170";
+                        engine_power_val = "150";
                         break;
                     case 5:
-                        engine_power_val = "180";
-                        break;
-                    case 6:
                         engine_power_val = "200";
                         break;
                      default:
@@ -558,7 +555,7 @@ public class Purchase extends AppCompatActivity {
                 purchase_btn.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
                 HashMap<String,String> values = new HashMap<>();
-                values.put("user",current_user_name);
+                values.put("user",current_user_name.toLowerCase());
                 values.put("seller_name",o_name);
                 values.put("seller_detail",o_detail);
                 values.put("reg_no",b_no);

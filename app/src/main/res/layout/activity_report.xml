@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Report"
-    android:orientation="vertical"
+
     >
 
     <LinearLayout
+        android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -33,6 +34,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_below="@+id/layout1"
+        android:id="@+id/layout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -63,6 +66,8 @@
             />
     </LinearLayout>
     <LinearLayout
+        android:layout_below="@+id/layout2"
+        android:id="@+id/layout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -71,8 +76,9 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Chasis #"
-            android:inputType="text"
             android:id="@+id/edt_chasis_no"
+            android:inputType="textCapCharacters"
+            android:textAllCaps="true"
             />
         <ImageButton
             android:layout_width="match_parent"
@@ -84,16 +90,19 @@
             android:background="@drawable/button_rounded"/>
     </LinearLayout>
     <ListView
+        android:layout_below="@+id/layout3"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
+        android:layout_height="wrap_content"
         android:id="@+id/report_listView">
 
     </ListView>
 
     <LinearLayout
-
+        android:paddingBottom="5dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/layout4"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
 
         >
@@ -132,4 +141,4 @@
             android:textSize="20sp"/>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

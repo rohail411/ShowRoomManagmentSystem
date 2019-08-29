@@ -180,17 +180,26 @@ public class Report extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Sold so = dataSnapshot.getValue(Sold.class);
-
+                final String chasis = so.getChasis_no();
                 final AlertDialog.Builder builder = new AlertDialog.Builder(Report.this);
                 builder.setCancelable(false);
                 builder.setTitle("Buyer \t\t"+so.getBuyer_name());
                 builder.setMessage("Features: \t\t"+so.getBrand().toUpperCase()+"/"+so.getColor().toUpperCase()+"/"+so.getModel()+"\n"+
-                        "Chasis #: \t\t"+so.getChasis_no()+"\n"+"Reg #: \t\t\t\t\t"+so.getReg_no().toUpperCase()+"\n"+"Sell Price: \t\t"+String.valueOf(so.getSell_amount())
-                        +"\n"+"Updated By:"+"\t\t"+so.getUpdated_by());
+                        "Chasis #: \t\t"+so.getChasis_no()+"\n"+"Reg #: \t\t\t\t\t"+so.getReg_no().toUpperCase()+"\n"+"Purchase Price"+"\t\t"+String.valueOf(so.getBuy_amount())+"\n"+"Sell Price: \t\t"+String.valueOf(so.getSell_amount())
+                        +"\n"+"Sell Date:"+"\t\t"+so.getDate().getDay()+"/"+so.getDate().getMonth()+"/"+so.getDate().getYear()+"\n"+"Updated By:"+"\t\t"+so.getUpdated_by());
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i =new Intent(Report.this,ProductDetailView.class);
+                        i.putExtra("key",chasis);
+                        i.putExtra("caller_activity_name",Report.class.toString());
+                        startActivity(i);
                     }
                 });
                 builder.show();

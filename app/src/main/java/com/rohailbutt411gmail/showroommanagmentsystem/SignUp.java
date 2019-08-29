@@ -74,7 +74,7 @@ public class SignUp extends AppCompatActivity {
                         selected_role = "employee";
                         break;
                      default:
-                            selected_role = "employee";
+                         selected_role = "employee";
                 }
             }
 
@@ -83,12 +83,10 @@ public class SignUp extends AppCompatActivity {
 
             }
         });
-        if(role.equals("admin")){
+        if(!selected_role.equals("admin")){
             spinner.setVisibility(View.VISIBLE);
         }
     }
-
-
 
     public void sign_up(View view) {
        final String u = username.getText().toString().trim();
